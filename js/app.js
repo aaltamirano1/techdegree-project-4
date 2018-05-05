@@ -121,13 +121,14 @@ $(document).ready(function() {
 		$('#player1').addClass('active');
 	});
 	$('.box').click(function(){
-		toggleActivePlayer();
-		if ($('#player1').hasClass('active')){
-			$(this).addClass('box-filled-2');
-		} else if ($('#player2').hasClass('active')){
-			$(this).addClass('box-filled-1');
+		if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
+			toggleActivePlayer();
+			if ($('#player1').hasClass('active')){
+				$(this).addClass('box-filled-2');
+			} else if ($('#player2').hasClass('active')){
+				$(this).addClass('box-filled-1');
+			}
+			findWinner();
 		}
-		findWinner();
 	});
-
 });
