@@ -114,6 +114,7 @@ function win(player){
 		$('#player2').removeClass('active');
 		$('.box').removeClass('box-filled-1');
 		$('.box').removeClass('box-filled-2');
+		$('.box').css('background-image', 'none');
 	});
 }
 function tie(){
