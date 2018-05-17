@@ -80,6 +80,19 @@ function win(player){
 		  <header>
 		    <h1>Tic Tac Toe</h1>
 		    <p class="message">Winner</p>
+		    <div id="playerInfo">
+			    <div class="name-div">
+				    <label>Player1 can enter their name below</label>
+				    <input type="type" name="name1" id="name1">
+			    </div>
+			    <div class="name-div name2-div">
+				    <label>Player2 can enter their name below.</label>
+				    <input type="type" name="name2" id="name2">
+				    <br>
+				    <input type="checkbox" name="computer" id="computer">
+				    <label>Play alone?</label>
+			    </div>
+		    </div>
 		    <a href="#" class="button">New game</a>
 		  </header>
 		</div>
