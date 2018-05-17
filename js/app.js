@@ -3,8 +3,9 @@ function toggleActivePlayer(){
 	$('#player1').toggleClass('active');
 	$('#player2').toggleClass('active');
 }
-// game ends when one player has three of their symbols in a row horizontally/vertically/diagonally.
+
 function findWinner(){
+	// game ends when one player has three of their symbols in a row horizontally/vertically/diagonally.
 	rowWins('x');
 	rowWins('o');
 	columnWins('x');
@@ -120,6 +121,19 @@ $(document).ready(function() {
 		<div class="screen screen-start" id="start">
 		  <header>
 		    <h1>Tic Tac Toe</h1>
+		    <div id="playerInfo">
+			    <div class="name-div">
+				    <label>Player1 can enter their name below</label>
+				    <input type="type" name="name1" id="name1">
+			    </div>
+			    <div class="name-div name2-div">
+				    <label>Player2 can enter their name below.</label>
+				    <input type="type" name="name2" id="name2">
+				    <br>
+				    <input type="checkbox" name="computer" id="computer">
+				    <label>Play alone?</label>
+			    </div>
+		    </div>
 		    <a href="#" class="button">Start game</a>
 		  </header>
 		</div>
@@ -128,6 +142,13 @@ $(document).ready(function() {
 	$('#start a').click(function(){
 		$('#start').hide();
 		$('#player1').addClass('active');
+		$("<div id='name-header'</div>").insertAfter($('header'));
+	 	if($('#name1').val()!==''){
+	 		$("#name-header").append('<p id="name1-header">'+$('#name1').val()+'</p>');
+	 	}
+	 	if($('#name2').val()!==''){
+	 		$("#name-header").append('<p id="name2-header">'+$('#name2').val()+'</p>');
+	 	}
 	});
 	$('.box').click(function(){
 		// players can only click on empty squares.
@@ -140,7 +161,23 @@ $(document).ready(function() {
 			} else if ($('#player2').hasClass('active')){
 				$(this).addClass('box-filled-1');
 			}
+			// // game ends when one player has three of their symbols in a row horizontally/vertically/diagonally or if they tie.
 			findWinner();
+		}
+	});
+	// when current player mouses over an empty square on the board, their X or O should appear on the square.
+	$('.box').mouseenter(function(){
+		if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
+			if ($('#player1').hasClass('active')){
+				$(this).css('background-image', 'url(./img/o.svg)');
+			} else if ($('#player2').hasClass('active')){
+				$(this).css('background-image', 'url(./img/x.svg)');
+			}
+		}
+	});
+	$('.box').mouseleave(function(){
+		if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
+			$(this).css('background-image', 'none');
 		}
 	});
 });
