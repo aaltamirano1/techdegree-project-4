@@ -75,6 +75,7 @@ function x(box){
 }
 // when the game ends, the board disappears and the game end screen appears.
 function win(player){
+	$(".screen").remove();
 	$('body').append(`
 		<div class="screen screen-win" id="finish">
 		  <header>
@@ -109,7 +110,7 @@ function win(player){
 	}
 	// when a player clicks "New Game" button, the board appears again, empty, and a new game begins.
 	$('#finish a').click(function(){
-		$('#finish').remove();
+		$('.screen').hide();
 		$('#player1').addClass('active');
 		$('#player2').removeClass('active');
 		$('.box').removeClass('box-filled-1');
@@ -127,6 +128,10 @@ function tie(){
 	if (empty.length===0){
 		win('tie');
 	}
+}
+
+function computer(){
+	return document.getElementById("computer").checked;
 }
 
 $(document).ready(function() {
@@ -153,45 +158,87 @@ $(document).ready(function() {
 		</div>
 	`);
 	// when the player clicks start button start screen disappears, board appears, game begins.
-	$('#start a').click(function(){
-		$('#start').hide();
+	$('.button').click(function(){
+		$('.screen').hide();
 		$('#player1').addClass('active');
 		$("<div id='name-header'</div>").insertAfter($('header'));
 	 	if($('#name1').val()!==''){
 	 		$("#name-header").append('<p id="name1-header">'+$('#name1').val()+'</p>');
+	 	}else{
+	 		$("#name-header").append('<p id="name1-header">Player1</p>');
 	 	}
 	 	if($('#name2').val()!==''){
 	 		$("#name-header").append('<p id="name2-header">'+$('#name2').val()+'</p>');
+	 	}else{
+	 		$("#name-header").append('<p id="name2-header">Player2</p>');
 	 	}
-	});
-	$('.box').click(function(){
-		// players can only click on empty squares.
-		if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
-			// play alternates between X and O.
-			toggleActivePlayer();
-			// when the player clicks on an empty square, attach the class box-filled-1 (for O) or box-filled-2 (for X) to the square.
-			if ($('#player1').hasClass('active')){
-				$(this).addClass('box-filled-2');
-			} else if ($('#player2').hasClass('active')){
-				$(this).addClass('box-filled-1');
+	 	
+	 		
+		$('.box').click(function(){
+			if(!computer()){
+				// players can only click on empty squares.
+				if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
+					// play alternates between X and O.
+					toggleActivePlayer();
+					// when the player clicks on an empty square, attach the class box-filled-1 (for O) or box-filled-2 (for X) to the square.
+					if ($('#player1').hasClass('active')){
+						$(this).addClass('box-filled-2');
+					} else if ($('#player2').hasClass('active')){
+						$(this).addClass('box-filled-1');
+					}
+					// // game ends when one player has three of their symbols in a row horizontally/vertically/diagonally or if they tie.
+					findWinner();
+				}
+			}else {
+				if ($('#player1').hasClass('active')){
+					// player can only click on empty squares.
+					if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
+						// when the player clicks on an empty square, attach the class box-filled-1 (for O) or box-filled-2 (for X) to the square.
+						$(this).addClass('box-filled-1');
+
+						// // game ends when one player has three of their symbols in a row horizontally/vertically/diagonally or if they tie.
+						findWinner();
+
+						// play alternates between X and O.
+						toggleActivePlayer();
+						
+						var empty = [];
+						$(".box").each(function(i, box){
+							if(!box.classList.contains("box-filled-1") && !box.classList.contains("box-filled-2")){
+								empty.push(box);
+							 }
+						});
+						var selection = Math.floor(Math.random() * Math.floor(empty.length));
+						
+						setTimeout(function(){
+							empty[selection].classList.add('box-filled-2');
+							empty[selection].style.backgroundImage = 'url(./img/x.svg)';
+							// // game ends when one player has three of their symbols in a row horizontally/vertically/diagonally or if they tie.
+							findWinner();
+
+							// play alternates between X and O.
+							toggleActivePlayer();
+						}, 2000);
+						
+					}
+				}
 			}
-			// // game ends when one player has three of their symbols in a row horizontally/vertically/diagonally or if they tie.
-			findWinner();
-		}
-	});
-	// when current player mouses over an empty square on the board, their X or O should appear on the square.
-	$('.box').mouseenter(function(){
-		if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
-			if ($('#player1').hasClass('active')){
-				$(this).css('background-image', 'url(./img/o.svg)');
-			} else if ($('#player2').hasClass('active')){
-				$(this).css('background-image', 'url(./img/x.svg)');
+		});	 		
+		 	
+		// when current player mouses over an empty square on the board, their X or O should appear on the square.
+		$('.box').mouseenter(function(){
+			if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
+				if ($('#player1').hasClass('active')){
+					$(this).css('background-image', 'url(./img/o.svg)');
+				} else if ($('#player2').hasClass('active') && !computer()){
+					$(this).css('background-image', 'url(./img/x.svg)');
+				}
 			}
-		}
-	});
-	$('.box').mouseleave(function(){
-		if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
-			$(this).css('background-image', 'none');
-		}
+		});
+		$('.box').mouseleave(function(){
+			if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
+				$(this).css('background-image', 'none');
+			}
+		});
 	});
 });
