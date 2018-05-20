@@ -81,19 +81,6 @@ function win(player){
 		  <header>
 		    <h1>Tic Tac Toe</h1>
 		    <p class="message">Winner</p>
-		    <div id="playerInfo">
-			    <div class="name-div">
-				    <label>Player1 can enter their name below</label>
-				    <input type="type" name="name1" id="name1">
-			    </div>
-			    <div class="name-div name2-div">
-				    <label>Player2 can enter their name below.</label>
-				    <input type="type" name="name2" id="name2">
-				    <br>
-				    <input type="checkbox" name="computer" id="computer">
-				    <label>Play alone?</label>
-			    </div>
-		    </div>
 		    <a href="#" class="button">New game</a>
 		  </header>
 		</div>
@@ -101,8 +88,10 @@ function win(player){
 	// add the appropriate class (and therefore background) to the <div> for the winning screen.
 	if (player==='o') {
 		$('.screen').addClass('screen-win-one');
+		$('.message').text(name1+" wins!");
 	}else if (player==='x') {
 		$('.screen').addClass('screen-win-two');
+		$('.message').text(name2+" wins!");
 	// if the game ends in a tie, show the phrase "It's a Tie!" instead of "Winner".
 	}else if (player==='tie') {
 		$('.screen').addClass('screen-win-tie');
@@ -130,9 +119,65 @@ function tie(){
 	}
 }
 
-function computer(){
-	return document.getElementById("computer").checked;
+// if player did not select to play against computer on start screen.
+function withoutComputer(){
+	$('.box').click(function(){
+		// players can only click on empty squares.
+		if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
+			// play alternates between X and O.
+			toggleActivePlayer();
+			// when the player clicks on an empty square, attach the class box-filled-1 (for O) or box-filled-2 (for X) to the square.
+			if ($('#player1').hasClass('active')){
+				$(this).addClass('box-filled-2');
+			} else if ($('#player2').hasClass('active')){
+				$(this).addClass('box-filled-1');
+			}
+			// game ends when one player has three of their symbols in a row horizontally/vertically/diagonally or if they tie.
+			findWinner();
+		}
+	});
 }
+// if player did select to play against computer on start screen.
+function withComputer(){
+	$('.box').click(function(){	
+		// sequence starts when player makes the first move.
+		if ($('#player1').hasClass('active')){
+			// player can only click on empty squares.
+			if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
+				// when the player clicks on an empty square, attach the class box-filled-1 (for O) or box-filled-2 (for X) to the square.
+				$(this).addClass('box-filled-1');
+
+				// check if player's move resulted in win/tie.
+				findWinner();
+
+				// play alternates between X and O.
+				toggleActivePlayer();
+				
+				// computer finds empty boxes on board and selects one randomly.
+				var empty = [];
+				$(".box").each(function(i, box){
+					if(!box.classList.contains("box-filled-1") && !box.classList.contains("box-filled-2")){
+						empty.push(box);
+					 }
+				});
+				var selection = Math.floor(Math.random() * Math.floor(empty.length));
+				
+				setTimeout(function(){
+					empty[selection].classList.add('box-filled-2');
+					empty[selection].style.backgroundImage = 'url(./img/x.svg)';
+					// check if computer's move resulted in win/tie.
+					findWinner();
+
+					// play alternates between X and O.
+					toggleActivePlayer();
+				}, 2000);
+				
+			}
+		}
+	});	 		
+}
+
+var name1, name2, computer;
 
 $(document).ready(function() {
 	// when the page loads, the startup screen should appear. 
@@ -160,77 +205,32 @@ $(document).ready(function() {
 	// when the player clicks start button start screen disappears, board appears, game begins.
 	$('.button').click(function(){
 		$('.screen').hide();
+		// Player1, O, starts.
 		$('#player1').addClass('active');
+
+
+		// A header is added with player names if user(s) provided them on start screen. Player1/Player2 are the default.
 		$("<div id='name-header'</div>").insertAfter($('header'));
-	 	if($('#name1').val()!==''){
-	 		$("#name-header").append('<p id="name1-header">'+$('#name1').val()+'</p>');
+		name1 = $('#name1').val() || "Player1";
+	 	$("#name-header").append('<p id="name1-header">'+name1+'</p>');
+	 	name2 = $('#name2').val() || "Player2";
+	 	$("#name-header").append('<p id="name2-header">'+name2+'</p>');	 	
+	
+	 	// checks if user selected to play against a computer and plays game accordingly.
+	 	computer = document.getElementById("computer").checked;
+	 	if(!computer){
+	 		withoutComputer();
 	 	}else{
-	 		$("#name-header").append('<p id="name1-header">Player1</p>');
+	 		withComputer();
 	 	}
-	 	if($('#name2').val()!==''){
-	 		$("#name-header").append('<p id="name2-header">'+$('#name2').val()+'</p>');
-	 	}else{
-	 		$("#name-header").append('<p id="name2-header">Player2</p>');
-	 	}
-	 	
-	 		
-		$('.box').click(function(){
-			if(!computer()){
-				// players can only click on empty squares.
-				if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
-					// play alternates between X and O.
-					toggleActivePlayer();
-					// when the player clicks on an empty square, attach the class box-filled-1 (for O) or box-filled-2 (for X) to the square.
-					if ($('#player1').hasClass('active')){
-						$(this).addClass('box-filled-2');
-					} else if ($('#player2').hasClass('active')){
-						$(this).addClass('box-filled-1');
-					}
-					// // game ends when one player has three of their symbols in a row horizontally/vertically/diagonally or if they tie.
-					findWinner();
-				}
-			}else {
-				if ($('#player1').hasClass('active')){
-					// player can only click on empty squares.
-					if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
-						// when the player clicks on an empty square, attach the class box-filled-1 (for O) or box-filled-2 (for X) to the square.
-						$(this).addClass('box-filled-1');
 
-						// // game ends when one player has three of their symbols in a row horizontally/vertically/diagonally or if they tie.
-						findWinner();
 
-						// play alternates between X and O.
-						toggleActivePlayer();
-						
-						var empty = [];
-						$(".box").each(function(i, box){
-							if(!box.classList.contains("box-filled-1") && !box.classList.contains("box-filled-2")){
-								empty.push(box);
-							 }
-						});
-						var selection = Math.floor(Math.random() * Math.floor(empty.length));
-						
-						setTimeout(function(){
-							empty[selection].classList.add('box-filled-2');
-							empty[selection].style.backgroundImage = 'url(./img/x.svg)';
-							// // game ends when one player has three of their symbols in a row horizontally/vertically/diagonally or if they tie.
-							findWinner();
-
-							// play alternates between X and O.
-							toggleActivePlayer();
-						}, 2000);
-						
-					}
-				}
-			}
-		});	 		
-		 	
 		// when current player mouses over an empty square on the board, their X or O should appear on the square.
 		$('.box').mouseenter(function(){
 			if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
 				if ($('#player1').hasClass('active')){
 					$(this).css('background-image', 'url(./img/o.svg)');
-				} else if ($('#player2').hasClass('active') && !computer()){
+				} else if ($('#player2').hasClass('active') && !computer){
 					$(this).css('background-image', 'url(./img/x.svg)');
 				}
 			}
