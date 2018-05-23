@@ -123,16 +123,16 @@ const tie = ()=>{
 
 // if player did not select to play against computer on start screen.
 const withoutComputer = ()=>{
-	$('.box').click(()=>{
+	$('.box').click((e)=>{
 		// players can only click on empty squares.
-		if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
+		if(!$(e.target).hasClass('box-filled-1') && !$(e.target).hasClass('box-filled-2')){
 			// play alternates between X and O.
 			toggleActivePlayer();
 			// when the player clicks on an empty square, attach the class box-filled-1 (for O) or box-filled-2 (for X) to the square.
 			if ($('#player1').hasClass('active')){
-				$(this).addClass('box-filled-2');
+				$(e.target).addClass('box-filled-2');
 			} else if ($('#player2').hasClass('active')){
-				$(this).addClass('box-filled-1');
+				$(e.target).addClass('box-filled-1');
 			}
 			// game ends when one player has three of their symbols in a row horizontally/vertically/diagonally or if they tie.
 			findWinner();
