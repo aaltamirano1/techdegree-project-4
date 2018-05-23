@@ -226,18 +226,18 @@ $(document).ready(()=>{
 	 	}
 
 		// when current player mouses over an empty square on the board, their X or O should appear on the square.
-		$('.box').mouseover((e)=>{
-			if(!$(e.target).hasClass('box-filled-1') && !$(e.target).hasClass('box-filled-2')){
+		$('.box').mouseover(function(){
+			if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
 				if ($('#player1').hasClass('active')){
-					$(e.target).css('background-image', 'url(./img/o.svg)');
+					$(this).css('background-image', 'url(./img/o.svg)');
 				} else if ($('#player2').hasClass('active') && !computer){
-					$(e.target).css('background-image', 'url(./img/x.svg)');
+					$(this).css('background-image', 'url(./img/x.svg)');
 				}
 			}
 		});
-		$('.box').mouseleave((e)=>{
-			if(!$(e.target).hasClass('box-filled-1') && !$(e.target).hasClass('box-filled-2')){
-				$(e.target).css('background-image', 'none');
+		$('.box').mouseleave(function(){
+			if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
+				$(this).css('background-image', 'none');
 			}
 		});
 	});
