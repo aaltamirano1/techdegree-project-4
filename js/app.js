@@ -141,13 +141,13 @@ const withoutComputer = ()=>{
 }
 // if player did select to play against computer on start screen.
 const withComputer = ()=>{
-	$('.box').click(()=>{	
+	$('.box').click((e)=>{	
 		// sequence starts when player makes the first move.
 		if ($('#player1').hasClass('active')){
 			// player can only click on empty squares.
-			if(!$(this).hasClass('box-filled-1') && !$(this).hasClass('box-filled-2')){
+			if(!$(e.target).hasClass('box-filled-1') && !$(e.target).hasClass('box-filled-2')){
 				// when the player clicks on an empty square, attach the class box-filled-1 (for O) or box-filled-2 (for X) to the square.
-				$(this).addClass('box-filled-1');
+				$(e.target).addClass('box-filled-1');
 
 				// check if player's move resulted in win/tie.
 				findWinner();
